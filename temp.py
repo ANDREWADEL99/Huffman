@@ -32,6 +32,17 @@ class HeapNode():
              if(not isinstance(other, HeapNode)):
                  return False
              return self.freq == other.freq
+         
+def heap_to_code(root,currentCode,codes,reverse):
+    if (root == None):
+        return
+
+    if(root.char!=None):
+        codes[root.char]= currentCode
+        reverse[currentCode]=root.char
+
+    heap_to_code(root.left,currentCode + "0",codes,reverse)
+    heap_to_code(root.right,currentCode + "1",codes,reverse)                   
 
 def main():
      f=open("Huffman.txt", "r");
@@ -55,7 +66,7 @@ def main():
      
      for key in count:
          node = HeapNode(key, count[key])
-         print(node)
+         print(node.char)
          heapq.heappush(list1 ,node)
                   
      while(len(list1)>1):
@@ -65,6 +76,29 @@ def main():
          merged.left = node1
          merged.right = node2
          heapq.heappush(list1, merged)
+     
+     root =heapq.heappop(list1)  
+     # Encode the read text
+     currentCode ="";
+     codes={};
+     reverse={};
+     heap_to_code(root,currentCode,codes,reverse);
+     
+     encoded_text =""
+     for character in text:
+         encoded_text += codes[character]
          
-  
+     print(encoded_text)
+     #Decode the encoded text
+     code=""
+     decode_text=""
+     for bit in encoded_text:
+         code +=bit
+         if(code in reverse):
+             character =reverse[code]
+             decode_text +=character
+             code = ""
+             
+     print(decode_text)
+
 main()
